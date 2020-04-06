@@ -8,7 +8,7 @@ COPY .docker/php/php.ini /usr/local/etc/php/php.ini
 RUN apt-get -yqq update \
     && apt-get -yqq upgrade \
     && apt-get -yq install --no-install-recommends unzip wget curl git libzip-dev libicu-dev libcurl4-openssl-dev libpng-dev gnupg apt-transport-https  build-essential libaio1 zlib1g-dev  libxml2-dev \
-    && docker-php-ext-install mysqli pdo_mysql zip gd pcntl curl intl xmlrpc\
+    && docker-php-ext-install mysqli pdo_mysql zip gd pcntl curl intl xmlrpc soap opcache\
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && docker-php-source delete

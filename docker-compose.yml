@@ -42,6 +42,7 @@ services:
     dockerfile: .docker/mysql/Dockerfile
    volumes:
     - "./sites/:/var/www/html/"
+    - ".docker/mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf"
     - mysqldata:/var/lib/mysql/
    networks:
     - app-network
