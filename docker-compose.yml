@@ -1,0 +1,53 @@
+version : "3"
+networks:
+  app-network:
+    driver: bridge
+volumes: 
+  mysqldata:
+   driver: "local"
+  moodledata:
+    driver: "local"
+services:
+ apache:
+  build:
+   context: .
+   dockerfile: .docker/apache/Dockerfile
+  depends_on:
+   - app
+   - mysql
+  networks:
+    - app-network 
+  ports: 
+    - "80:80"
+  volumes:
+    - "./sites/:/var/www/html/"
+    - moodledata:/var/moodledata/
+    - "./.docker/apache/moodle.apache.conf:/usr/local/apache2/conf/moodle.apache.conf"
+  container_name: apache
+ app:
+  build:
+    context: .
+    dockerfile: .docker/php/Dockerfile
+  volumes:
+   - "./sites/:/var/www/html/"
+   - moodledata:/var/moodledata/
+   - "./.docker/php/php.ini:/usr/local/etc/php/php.ini"
+  networks:
+   - app-network
+  env_file: .docker.env
+  container_name: app
+ mysql:
+   build: 
+    context: .
+    dockerfile: .docker/mysql/Dockerfile
+   volumes:
+    - "./sites/:/var/www/html/"
+    - mysqldata:/var/lib/mysql/
+   networks:
+    - app-network
+   ports:
+    - "3306:3306"
+   environment:
+    - MYSQL_DATABASE=moodle
+    - MYSQL_ROOT_PASSWORD=moodle
+   container_name: mysql
